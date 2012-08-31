@@ -1,0 +1,42 @@
+#!/bin/bash -e
+#
+# Shell script to update JOSM under GNU/Linux as repositories are not always up2date
+# Author: Fabien Archambault
+# Last update: 31 August 2012
+# Version: 0.1
+# License: DWTFYW
+#
+
+INSTALL_DIR="/home/fabien/bin"
+
+#
+# No need to modify after this
+#
+
+# Version checks
+VERSION_INSTALLED=5482
+VERSION_SITE=$(wget -o /dev/null -O - http://josm.openstreetmap.de/wiki/Download | grep "tested JOSM" | awk '$0 ~ "tested JOSM" {print $NF}')
+
+# Check install folder exists
+if [[ ! -d "${INSTALL_DIR}" ]] ; then
+	echo "${INSTALL_DIR} does not exists! Please update $0 or create the folder."
+	exit
+fi
+
+# Update or not?
+if [[ "${VERSION_SITE}" -ne "${VERSION_INSTALLED}" ]] ; then
+	echo "UPDATING"
+	rm -f "${INSTALL_DIR}"/josm-tested.jar
+	cd "${INSTALL_DIR}" 
+	wget -o /dev/null http://josm.openstreetmap.de/josm-tested.jar
+	sed -i 's/VERSION_INSTALLED='"${VERSION_INSTALLED}"'/VERSION_INSTALLED='"${VERSION_SITE}"'/' $0
+	echo "JOSM updated to version ${VERSION_SITE}"
+else
+	echo "No update found"
+fi
+
+# Check if the install dir is in the path
+if [[ $(echo $PATH | grep -c "${INSTALL_DIR}") -eq 0 ]] ; then
+	echo "Do not forget to add ${INSTALL_DIR} to your PATH"
+	echo "You can achieve this by doing: export PATH=${INSTALL_DIR}:\$PATH"
+fi
