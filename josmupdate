@@ -39,4 +39,5 @@ fi
 if [[ $(echo $PATH | grep -c "${INSTALL_DIR}") -eq 0 ]] ; then
 	echo "Do not forget to add ${INSTALL_DIR} to your PATH"
 	echo "You can achieve this by doing: export PATH=${INSTALL_DIR}:\$PATH"
+	echo "Run JOSM with: java -jar ${INSTALL_DIR}/josm-tested.jar > /dev/null 2>&1 &"
 fi
